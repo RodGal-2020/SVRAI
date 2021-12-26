@@ -1,0 +1,7 @@
+N n
+s_i a s_j T
+s_i a s_j T
+s_i a s_j T
+s_i a s_j T
+s_i a s_j T
+...

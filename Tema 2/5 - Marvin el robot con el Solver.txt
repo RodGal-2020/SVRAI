@@ -1,0 +1,5 @@
+1. Lanzar "Solver_MDPs.exe".
+2. Decir que solo se usará una matriz y una matriz de recompensas.
+3. Escribir como dirección de la MDP: "MDP/Marvin.txt".
+4. Escribir como dirección de la matriz de recompensas: "MDP/Marvin_r.txt".
+5. Los resultados pueden verse en "MDP/Marvin_res.txt".
