@@ -1,6 +1,7 @@
 ;;; Tema 3, Ejercicio 3: Implementa Distributed Breakout y aplícalo a diversos CSPs.
 ;;; Autor: José Antonio Rodríguez Gallego
 ;;; Referencia: https://www.cs.us.es/~fsancho/Cursos/SVRAI/DisCSP.md.html#breakoutdistribuido
+;;; Última modificación: 15 / 01 / 2022, 10:55
 
 globals [
   domain ; El dominio de las variables
