@@ -32,3 +32,12 @@ Conjunto de matrices asociadas a MDPs, generadas de forma aleatoria según Gener
 #### stats
 Resultados obtenidos a la hora de aplicar Value-Iteration a las matrices de MDPS, guardando variables de interés con la idea de poder llevar a cabo un análisis estadístico más adelante.
 También existe un .txt utilizado para detectar errores a la hora de aplicar el algoritmo.
+
+## Tema 3
+En este tema me he centrado en la creación de un programa que aplique el algoritmo Breakout Distribuido, concretamente en el problema de la coloración de grafos.
+
+### Archivos principales
+Ej_Breakout_Distribuido.nlogo
+</br>
+→ El algoritmo ya indicado.
+
