@@ -1,5 +1,8 @@
 # Trabajos de SVRAI
 Autor: José Antonio Rodríguez Gallego
+
+Información detallada sobre el trabajo realizado se encuentra en la memoria, en formato HTML.
+
 ## Tema 2
 En este tema me he centrado en la creación de un programa que aplique el algoritmo Value-Iteration, de una forma tan genérica como me ha sido posible. 
 
@@ -40,4 +43,13 @@ En este tema me he centrado en la creación de un programa que aplique el algori
 Ej_Breakout_Distribuido.nlogo
 </br>
 → El algoritmo ya indicado.
+
+## Tema 7, 8.9
+En este tema me he centrado en la creación de un programa que simule el dilema del prisionero iterado, para diferentes estrategias.
+
+### Archivos principales
+Prisionero_Iterado.nlogo
+</br>
+→ El procedimiento ya indicado.
+
 
