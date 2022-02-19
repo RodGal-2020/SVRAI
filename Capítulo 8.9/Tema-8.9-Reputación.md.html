@@ -1,0 +1,343 @@
+   <meta charset="utf-8" emacsmode="-*- markdown -*-"> <link rel="stylesheet" href="sources/journal.css">
+
+<div class="head">
+   <div class="head-left">Rodríguez Gallego, José Antonio.</div>
+   <div class="head-right">Síntesis, Verificación y Razonamiento de Agentes Inteligentes</div>
+</div>
+
+
+<div>
+
+   <div class="tocAuxContents">
+      <!-- <h1><a href="#">1 | Título Capítulo 1</a></h1> -->
+      <!-- <h1><a href="#">2 | Título Capítulo 2</a></h1> -->
+      <!-- <h1><a href="#">3 | Título Capítulo 3</a></h1> -->
+      <!-- <h1><a href="#">...</a></h1> -->
+   </div>
+
+<h1><span class="current-ch current-ch-title"> 8.9 | Confianza y Reputación </span></h1>
+
+> "So why should I care about a bad reputation, anyway?"
+>
+>      -- Joan Jett & the Blackhearts
+
+Como concepto aplicable tanto a los campos de la inteligencia artificial distribuida, la economía o la biología evolutiva, la confianza es algo que, si bien puede resultarnos *a priori* intuitivo pensando en plataformas digitales habituales como eBay o Amazon, su formalización es, como todo lo que tiene relación con sistemas complejos, una tarea ardua que, si bien fuera del alcance de este curso, es posible abordar parcialmente, proporcionándonos un nuevo enfoque que, basado en lo visto sobre aprendizaje y comunicación, nos permite mejorar la forma en la que somos capaces de diseñar nuevos comportamientos para agentes.
+
+Por otro lado, la casuística es semejante para el caso de la reputación, pudiendo recurrir a los mismos ejemplos, pero dándoles otra perspectiva, como desarrollaremos a lo largo de las siguientes secciones. La cita con la que hemos empezado el capítulo, "¿Por qué debería preocuparme sobre una mala reputación?", pregunta de Joan Jett, servirá como muestra del enfoque principal que planeamos darle a este capítulo, que no es otro más que ser capaces de entender la importancia tanto de la confianza como de la reputación, planteando no solo las fortalezas, debilidades y utilidades de cada una, sino también mostrando algunos planteamientos posibles en ambos casos, complementándolos con un buen número de ejemplos tanto de pseudocódigo como de ejercicios, con los que con toda seguridad el lector podrá poner a prueba tanto el alcance como la comprensión del tema.
+
+Tratándose de cuestiones que se engloban dentro del área de las *redes complejas*, buscamos organizar la información encontrada sobre estos sectores, intentando mostrar un compendio ordenado que le permita a los interesados aprender sobre ellos con rapidez. Sin embargo, y aquí debemos destacar una limitación con la que nos hemos encontrado, pues teniendo en cuenta el área en la que trabajamos, resulta en muchas ocasiones, y concretamente en esta, muy complicado formalizar algunos conceptos que, si bien relativamente intuitivos, no disponen de una definición exacta, e incluso podemos encontrarnos con definiciones que no solo difieren, sino que pueden llegar a ser completamente antagónicas. 
+
+## 1. Cuestiones previas 
+
+Antes de entrar en materia es importante destacar algunos aspectos reseñables sobre otras secciones ya estudiadas, en las que nos apoyaremos, de forma más o menos explícita, para profundizar en nuestros temas de interés.
+
+Primeramente, una asunción habitual [#2] para poder hablar, ya sea de reputación o de confianza, es la de la existencia de comunicación, entendiéndose esta como un medio común en el que todos los agentes de nuestro sistema pueden, con más o menos limitaciones, intercambiar información. De hecho, resulta especialmente interesante hacer un análisis de ambos ámbitos considerando diferentes limitaciones en cuanto a la capacidad comunicativa. Un ejemplo reseñable de estas distinciones puede observarse en [#1], donde la fortaleza del medio comunicativo determina en gran medida el resultado tras múltiples iteraciones del proceso. 
+
+Resulta llamativo ver qué puede ocurrir cuando consideramos estructuras de comunicación **débiles**, entendiéndose con esto aquellas en las que puedan darse una o más de las siguientes situaciones:
+- Comunicaciones con contenido o destinatario erróneos.
+- Imposibilidad comunicativa entre agentes o grupos de agentes.
+- Limitaciones temporales en cuanto a la comunicación, esto es, que solo puede llevarse a cabo cada cierto tiempo.
+
+En cualquiera de estos casos, más semejantes a multitud de situaciones cotidianas, podemos encontrarnos con dificultades a la hora de plantear las dos herramientas que nos interesan, dado que perdemos la garantía de veracidad base. Cabe destacar, sin embargo, que podría ser interesante profundizar, especialmente en el caso de la confianza, en cualquiera de los problemas mencionados arriba. En relación a este punto se plantea el ejercicio 3, al final del documento.
+
+Otro punto relevante para darle significado a ambas herramientas, si bien no tan vital como la comunicación, es el aprendizaje, aunque en este caso no es posible formalizar tanto la dependencia, debido a la condición abstracta de este último. Es por ello que es relevante destacar que, entendiendo el aprendizaje como *una dinámica con retroalimentación*, como hicimos en el Capítulo 7, podemos considerar que tanto la confianza como la reputación pueden entenderse como subsecciones del aprendizaje, pues la consideración más habitual, y más concretamente la que tomaremos nosotros, se centra en la capacidad de los agentes para actualizar información a la que pueden acceder, ocasionalmente haciendo esto entre varios, siendo el resultado una mejora teórica en la capacidad de actuación.
+
+Por último, cabe destacar que una de las principales aplicaciones de ambas herramientas es la de incrementar la eficiencia de comportamientos en el ámbito de la negociación, ya vista en el Capítulo 8.5. Esto se debe a dos cuestiones, dependiendo de la dirección que consideremos entre la negociación y nuestros ámbitos de interés. 
+
+Considerando la primera orientación, esto es, la influencia de la negociación en la reputación y la confianza, es claro que diferentes comportamientos en la primera deberían determinar otros en los segundos. Un buen ejemplo de esta situación puede ser la dificultad a la hora de negociar con un agente, que es esperable que acabe afectando tanto a su reputación como a la confianza que podamos tener en sus ofertas. Otro ejemplo a considerar es el de la negociación de información, que influye directamente, y en este caso de forma completamente clara, a ambos aspectos.
+
+Si nos centramos ahora en la otra dirección, resulta evidente que la implementación de las herramientas indicadas debería servir, concretamente entendidas como parte de un proceso de aprendizaje, para mejorar el comportamiento de los agentes a la hora de llevar a cabo negociaciones. Ya no solo podríamos considerar la confianza que tenemos en la información de otro agente, sino que además podemos ampliar la percepción que tenemos sobre la misma gracias a la reputación que podría tener por ámbitos, el grupo al que pertenece, o la confianza que nos han indicado que deberíamos tener en él.
+
+Podríamos pensar en aplicar cualquiera de los aspectos mencionados previamente a ámbitos tales como la argumentación, vista en el Capítulo 8.8, o las subastas, en el Capítulo 8.6, por su relación con lo expuesto en los últimos párrafos. Si bien hablaremos más adelante, en la sección 5, de cómo pueden combinarse con las herramientas descritas en este capítulo, no resultan pilares fundamentales para proporcionar una motivación para el tema, como si que lo eran los anteriores.
+
+## 2. Confianza vs. Reputación
+
+Nos centramos ahora en ofrecer algo de perspectiva en lo que a distinguir estos dos conceptos se refiere, proporcionando algunas definiciones más o menos clásicas. Para proporcionar una idea clara de lo difícil que es distinguir estos ámbitos en la práctica, podemos pensar en un ejemplo sencillo: **eBay**, plataforma digital en la que miles de usuarios participan en subastas diariamente. Podríamos pensar que un vendedor que ofrece artículos de alta calidad podría tener, sin una definición previa clara del concepto, una buena **reputación**, únicamente por aquello que vende y por las valoraciones positivas de sus compradores. Sin embargo, si estudiamos las ventas que realiza, podríamos encontrarnos con que no siempre entrega el producto solicitado, o incluso que en ocasiones no llega a proporcionar alguno siquiera. En este caso, podríamos quizás decir que aunque tenga una reputación más o menos buena, quizás no sea de **confianza**. ¿Y qué ocurriría si otros usuarios influyentes de la plataforma nos los recomendasen? Esto podría dar lugar a un efecto dominó, en el que tanto la reputación como la confianza de dichos 'recomendadores' se vería afectada por el resultado final de la transacción.
+
+Como podemos ver con el ejemplo mencionado antes, aunque podamos apreciar diferencias *a priori* entre ambos conceptos, es claro que los dos se solapan, y no solo eso, sino que además uno tiene efecto en el otro, entendiéndose en este caso como una especie de correlación positiva, todo esto sin formalización alguna introducida por ahora.
+
+Intentemos ahora centrarnos en el concepto de la **confianza**, que como hemos visto hasta el momento parece hacer referencia a una creencia o esperanza sobre ciertos comportamientos, como por ejemplo en el caso de eBay la entrega del producto en condiciones apropiadas.
+
+!!! Tip
+    **Confianza:** <br>- DRAE: *Esperanza firme que se tiene de alguien o algo.* <br>- Gambetta [#5]: *Probabilidad subjetiva según la cual un individuo espera que otro realice cierta acción de la que depende su bienestar*.<br>- Marsh [#6]: *Esperanza sobre un comportamiento incierto*. <br>- Baghramian *et al.* [#7], para 'confiar en alguien': *Ser vulnerable a la posibilidad (...) de que no respeten la confianza depositada*.
+
+De estas posibles definiciones, en este capítulo tomaremos la proporcionada por Marsh, si bien la perspectiva —probablemente menos optimista— de Baghramian también es de utilidad, como mencionaremos principalmente en el apartado sobre las limitaciones de estas herramientas, en la sección 6. Profundizaremos más en este concepto en los próximos apartados, teniendo en mente que es, como ya dijimos, una **creencia sobre cierto comportamiento**.
+	
+Si nos centramos ahora en el caso de la **reputación** podríamos, por ejemplo, ver que en el caso de eBay un vendedor podría tener grandes valoraciones de sus compradores, pudiendo identificar este valor con su reputación. Es claro que este parámetro afecta a las acciones que tomamos, siendo el caso más claro el optar por un vendedor u otro en función de la reputación que tenga. Podemos observar, como ya hemos dicho, que existe una relación clara con la confianza, y es que a mayor reputación mayor es la confianza esperada. Raro sería encontrarse quizás un vendedor con una reputación impecable, pero que no inspirase confianza, y viceversa. Yendo ahora a algunas definiciones, observamos que no existe tanta variedad como para la confianza, pues en los casos en los que se tratan como un mismo concepto generalmente se opta por usar como nombre este último.
+
+!!! Tip
+    **Reputación:** <br>- DRAE: *Prestigio o estima en que son tenidos alguien o algo.* <br>- Mui en [#1]: *Percepción que un agente tiene de las intenciones y reglas de otro*. <br>- Weiss en [#2]: *Lo que una entidades social dice sobre un objetivo de cara a su comportamiento.*
+	
+Podemos apreciar que las definiciones proporcionadas se asemejan a las de la confianza, con la pecualiridad de que en este caso se destaca también la cercanía presente hacia el otro. Además, es importante remarcar que en este caso hacemos también referencia a las 'reglas del juego', esto es, mientras que la confianza se refiere a las acciones esperadas del otro agente, la reputación puede aplicarse al acatamiento de las normas que rigen un juego, entendiéndose en este caso la definición de la teoría de juegos del Capítulo 5.
+
+En definitiva, si bien podemos entender que ambos conceptos difieren en varios puntos, es evidente que tienen una fuerte relación, y que en muchos casos nos resultará difícil establecer los límites entre uno y otro. Sin embargo, es cierto que justamente gracias a esta semejanza podremos definir estrategias comunes, aplicables en ambos casos, entrando en futuras secciones en mayor detalle en cuestiones propias de cada una, pero pasando ahora a la definición de un entorno de trabajo común.
+
+## 3. Fuentes de Información
+
+Debido a que ambas herramientas se fundamentan en una estrategia de aprendizaje a partir de un parámetro cuyo valor se deriva del entorno, justamente en esta línea resulta vital analizar las diferentes fuentes de información a las que un agente podría acceder, teniendo en cuenta las particularidades de cada una. De esta forma, entendiendo que tanto la reputación como la confianza comparten bases, las trataremos por ahora indistintamente, antes de concretar aspectos propias de cada una. En esta sección nos basaremos principalmente en el trabajo realizado por Mui en [#1] sobre la reputación, mezclado con la casuística considerada por Weiss en [#2] para la confianza, intentando proporcionar un entorno de trabajo teórico tan amplio como sea posible, uniendo diferentes perspectivas sobre la reputación y la confianza centrándonos en aquello que las genera: la información obtenida y la forma en la que se obtiene. En definitiva, intentaremos plantear **de qué forma las diferentes fuentes de información determinan el comportamiento** de uno o más agentes a través de las dos herramientas consideradas.
+
+Para organizar el contenido de esta sección nos guiaremos por la siguiente tabla, en la que se presenta una jerarquía de las diferentes fuentes de información que consideraremos en los próximos apartados.
+
+<img src="images/fuentes_de_info.PNG" style = "display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;"alt="Fuentes de información"/>
+
+Nótese que, en pos de la generalización, no partimos de una jerarquía de los orígenes de la información, sino que usamos el mismo árbol para hablar tanto de las posibles fuentes de información como para referirnos a la forma en la que esta se interpreta. Este hecho quedará más claro en el siguiente punto.
+
+### 3.1. Individual
+En este caso catalogamos aquí tanto la información que un individuo percibe **por sí mismo**, ya sea mediante observación directa o indirecta, como la que dicho individuo recibe **sobre sí mismo**. Tanto hablando de reputación como de confianza, un agente concreto podría intentar estimar, por ejemplo, de qué forma otros agentes confían en él, ya sea para colaborar en determinados procesos, para cumplir promesas o para proporcionar información verídica; o bien cuál es la reputación que se ha generado sobre él, entendiéndose que esta es accesible a todos. Además de estos casos, en los que el agente descubre información sobre sí mismo, nos podemos referir también en esta sección al caso, mucho más claro, en el que el agente obtiene información sobre su entorno a través de sus acciones, no dependiendo de una estructura intrínseca de grupo que le proporcione dichos datos.
+
+La información individual, tal y como uno podría esperarse, es la más inmediata a la hora de pensar en una implementación de las herramientas consideradas en un entorno multiagente, y es que admite un modelado básico muy sencillo: 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+let rep = 0, conf = 0, info = [];
+let rep_i = 0, conf_i = 0, info_i = [];
+add (x_i, rep_i, conf_i) to vista_agente_propia;
+for (agente x_i in agentes) {
+	for (agente' x_j in agentes with i != j) {
+			add (x_j, rep, conf, info) to vista_agente_individuos;
+	}
+}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Con esto incluiríamos valores para la reputación percibida sobre cada otro agente, la confianza que podemos tener en la información que nos proporciona y un vector *info* con justamente la información que nos ha proporcionado, pudiendo ser esta incluso información de segunda mano. Nótese que aunque podría parecer que no tiene sentido considerar el vector *info* para vista_agente_propia *a priori*, la principal utilidad que tiene en este caso es la de saber qué información le hemos proporcionado a cada otro agente en cada momento, con el objetivo de poder inferir la percepción que pueden tener los otros sobre uno. Este dato resulta especialmente interesante en aquellos casos en los que se pide cierto compromiso a la hora de compartir información, confirmando la veracidad de la misma a costa del riesgo del emisor.
+
+!!! Tip Definición: $C(x_i,x_j,k)$ 
+    Dado un sistema multiagente se define el parámetro $C(x_i,x_j)$ como la confianza que le agente $x_i$ deposita en el agente $x_j$. Análogamente se define el parámetro $C(x_i,x_j,k)$ como la confianza que le agente $x_i$ deposita en el agente $x_j$ en un ámbito concreto $k$, pudiendo representar esta última variable un aspecto u otro de la realidad dependiendo del problema en cuestión. Supondremos que ambas variables toman siempre valores reales en $[0, 1]$.  
+
+Por ejemplo, si nosotros, actuando como el agente $x_i$, le indicamos al agente $x_j$ que en su próxima negociación con el agente $x_k$ debería esperarse una dura negociación —midiendo esto como corresponda para el problema concreto— y luego descubrimos que la negociación finalmente fue sencilla para $x_j$, aunque este agente no haga pública su valoración de la confianza que tiene en nosotros, deberíamos esperar que dicho parámetro, $C(x_j,x_i)$, se viese reducido.
+
+
+!!! Tip Definición: $r(x_i,k)$ 
+    Dado un sistema multiagente se define el parámetro $r(x_i)$ como la reputación pública del agente $x_i$. Análogamente se define $r(x_i,k)$, referida a un ámbito concreto $k$. Supondremos que ambas variables toman siempre valores reales en $[0, 1]$.  
+
+Análogamente, en el caso más centrado en la reputación nos podríamos encontrar con que unos acontecimientos como los anteriores podrían deteriorar la reputación que nosotros, el agente $x_i$, tenemos. La principal diferencia con el caso anterior radica en que al trabajar con la reputación la entendemos como un parámetro público, de forma tal que nosotros mismos podríamos ver el efecto de esta última actuación sobre la variable en cuestión.
+
+### 3.2. Grupal
+Introducimos ahora el caso en el que la información en la que nos centramos, en relación con un individuo $x_i$, hace referencia a un grupo entero, ya sea porque **proviene de un grupo** o **porque nos proporciona información sobre todo el grupo**. El caso más claro en un contexto real es el de los representantes de una empresa, que pueden gozar de una reputación elevada a pesar de haber empezado a trabajar como representantes justo en el momento en el que observamos dicho parámetro. Esto, que se puede generalizar para diversos roles sociales, en nuestro caso nos sirve como ejemplo de situación en la que un agente, únicamente por el hecho de pertenecer a un grupo concreto, en este caso una empresa, recibe un trato diferente, debido a que se espera de él un comportamiento semejante al que ya se conoce de la empresa. Nótese que, aunque hayamos dado a entender que la reputación 'heredada' de la empresa es buena, esto no es necesariamente correcto, pues igualmente podría derivarse una reputación mala y una confianza reducida por la pertenencia a una empresa con peor reputación.
+
+En general, toda la información grupal presenta las mismas características que la individual, solo que considerando un conjunto de agentes objetivos en lugar de un único agente. Cabe destacar, sin embargo, que centrarnos en este tratamiento de la información puede resultar muy útil al trabajar con entornos en los que existe una remarcada división en grupos, como podría ser en cuestiones de organización política, con diferentes grupos interconectados pero con ideologías y comportamientos característicos por grupos.
+
+### 3.3. Información Directa
+Nos centramos ahora en la información que un agente $x_i$ obtiene directamente, dividiendo esta caracterización, a su vez en otras dos: información derivada de la interacción e información observada. El concepto básico de información directa, por otro lado, debería resultar relativamente claro, pues nos referimos con él, en general, a aquellos datos que han sido recopilados por el agente $x_i$, sin la necesidad de uno o más intermediarios.
+
+* **Derivada de la interacción**<br>En este caso entendemos que la información obtenida, ya sea esta una actualización de la reputación de otro agente, de la confianza en dicho agente o de cualquier otro parámetro, se ha **generado a través del trato directo**, entendiéndose el concepto de 'trato directo' según el sistema que estemos considerando. Por tomar un ejemplo sencillo, en el problema del prisionero iterado con varios jugadores en encuentros de 2, este 'trato directo' sería, por supuesto, el haber participado en un ronda con otro jugador. Habitualmente se considera que esta es la fuente de información más fiable, si bien es cierto que en determinadas topologías de información podría darse que el intercambio de información no tuviese garantías, como por ejemplo en el caso anterior pero considerando que existe una probabilidad, desconocida *a priori* por lo jugadores, de que su elección se convierta en la contraria a la que indicaron, como consecuencia de un error en el intercambio de información. Tal y como dijimos al principio del capítulo, esta no será una cuestión en la profundizaremos, dado que consideramos una comunicación correcta fundamental para poder trabajar este tema.
+
+!!! Tip Definición: $a(\overline{x})$
+    Definimos dentro del contexto de los sistemas multiagente las acciones realizadas por un conjunto de agentes $x_{i_1}, ..., x_{i_n}$ como el resultado de una acción conjunta entre los agentes involucrados. Esta acción, definida de forma genérica, se denotara $a(\overline{x})$, y podría representar tanto el intercambiar información como el resolver el encuentro en un problema del prisionero o el identificar al ganador de una subasta. En general, supondremos que $a$ nos proporciona un vector en un dominio apropiado, incluyendo tantos datos sobre el encuentro que dio lugar a la acción como sean necesarios, así como el resultado generado. Así, por ejemplo, el resultado $a$ de un encuentro en el dilema del prisionero vendría dado por la identificación de los agentes involucrados y la jugada escogida por cada uno, así como cualesquiera otros datos que resulten de interés en el problema, tales como la reputación de cada uno, la información de la que disponían, las reglas específicas del juego...
+
+
+* **Observada**<br>Mientras que la fuente de información anterior es clara, la información directa observada resulta menos intuitiva, y es que entendemos que, bajo la hipótesis de un entorno de comunicación correcto, un agente $x_i$ ha observado directamente una acción involucrando a otros dos agentes $x_j, x_k$, diferentes dos a dos, si conoce 'suficiente' de $a(x_j, x_k)$, la acción asociada a estos dos agentes en un instante determinado. Esto, tal y como hemos definido $a$, no representa únicamente el conocer el resultado, sino también el comportamiento de los dos agentes, si bien no necesariamente sus creencias sobre el entorno. De cara a una posible implementación, esta resulta relativamente sencilla dado que bastaría con un proceder como sigue:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ C
+to resolver-accion
+	cj <- determina_comportamiento(x_j)
+	ck <- determina_comportamiento(x_k)
+	a <- determina_resultado(cj, ck) 
+	add a to resultados_conocidos of {x_j, x_k}
+	add a to resultados_conocidos of observadores
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Una implementación de este hecho puede observarse en Mui [#1], para diferentes planteamientos, mencionados en la sección 4.2.
+
+### 3.4. Información Indirecta
+Ya hemos considerado el caso en el que las fuentes de información lo son de primera mano, esto es, el agente en cuestión ha observado el hecho generador de información por sí mismo, sin depender de otros agentes, fuerzas o comportamientos externos. Esta otra situación será la que consideremos en este punto, aquella en la que la información se obtiene mediante otras vías, a saber: la derivada por nuestro comportamiento a priori, la derivada de uno o más grupos y la propagada. Desarrollaremos ahora cada una de estas opciones, intentando plantear posibles implementaciones de las mismas.
+
+* **A priori derivada**<br>Supongamos la siguiente situación: el agente $x_i$ va a interactuar por primera vez con otro agente, $x_j$, del que no tiene información alguna, esto es, no ha llevabo a cabo ninguna acción conjunta con él, no ha observado su comportamiento, no pertenece a ningún grupo sobre el que tenga información y, en definitiva, lo único que sabe es que es otro agente en el mismo sistema. En este caso, incluido por completitud, entendemos que el agente $x_i$ considera algún tipo de información *a priori*, esto es, deriva de su conocimiento, o más bien estima, un comportamiento por parte del otro agente, normalmente a partir de información auxiliar. Es habitual considerar, centrándonos en el caso de la reputación, una neutra (0.5 tal y como la hemos modelado nosotros) para todos los agentes de los que no se dispone de información alguna, como hicieron Nowak y Simund [#9] en 1998. El comportamiento sería análogo para el caso de la confianza. Por poner otros ejemplos, Zacharia y Mess en 1999 [#10] consideran en su modelo sobre la reputación que los agentes de comportamiento desconocido tienen la menor reputación posible, mientras que Mui *et al.*, en 2001, asumen una distribución uniforme para estas reputaciones *a priori*.
+
+!!! Tip Definición: $g(x_i)$ 
+    Diremos que un individuo pertenece a un grupo $G$ si $G$ es un subconjunto del conjunto de agentes y $x_i \in G$. Además, diremos que $g(x_i) = G$.
+
+* **Derivada del grupo**<br>Nos encontramos ahora en una situación semejante a la expuesta en el punto anterior, solo que conociendo el valor de $g(x_j)$. Mientras que en el punto anterior debíamos partir de una suposición a priori, en este caso podemos basarnos en este dato, entendiendo que es el único del que disponemos, para extraer nueva información sobre $x_j$. Nótese, igualmente, que podríamos considerar el caso previo, el de la información *a priori* derivada, como uno particular de la información derivada del grupo, suponiendo que codificamos como un grupo adicional justamente el no pertencer a ninguno.
+
+* **Propagada**<br>Este es el caso más extremo de información indirecta, y uno de lo más interesantes debido al comportamiento en redes sociales, donde una cantidad importante de información se obtiene a través de la propagación, deseada o no, de la misma mediante el 'boca a boca'. Dos situaciones principales se pueden considerar en este caso: aquella en la que la información se deriva de un intercambio con otro agente y aquella en la que obtenemos los datos a partir de un 'superagente', un agente que dispone de privilegios adicionales en el sistema, y que puede ofrecer información a la que de otra forma no tendríamos acceso. Por ejemplo, en una plataforma como Facebook, el primer caso se correspondería con un mensaje enviado por algún amigo, obteniendo información de este forma sobre un tema común a ambos. En el segundo caso, en cambio, entenderíamos que esta información ha sido proporcionada por el propio Facebook, mediante alguna herramienta de difusión, como las ventanas sobre noticias o la inclusión de contenido patrocinado.
+
+## 4. Confianza y Reputación
+Una vez hemos considerado la jerarquía ya expuesta sobre las fuentes de información, es claro que esta determina, según el resultado de diferentes procesos, variaciones en lo que a la confianza y a la reputación se refiere. Sin embargo, proporcionado dicho entorno de trabajo, planeamos ahora intentar establecer a lo largo de este capítulo algunos ejemplos aplicados de uso de esta información ya sea desde la perspectiva de la confianza o de la reputación, si bien incluiremos también algunas consideraciones teóricas por su interés para aquellos que deseen profundizar en el tema.
+
+### 4.1. Enfoques Posibles para la Confianza y Aplicación 
+Centrándonos ahora en el tema de la confianza, uno de los principales aspectos que hay que tener en cuenta es el enfoque que se le quiere dar, siendo habitualmente dos las opciones, como discute Weiss en [#2]. En esencia, las posibilidades son o bien considerar la **confianza como un paso previo**, epistemológico, en el que el agente utiliza este parámetro como nueva entrada en su modelo BDI, ya explicado en el Capítulo 8.4, de forma tal que sirve de ayuda en la toma de decisiones; o bien considerar la **confianza como la unión de este procesamiento epistemológico y la acción determinada** según el razonamiento en cuestión.
+
+Aunque desde el punto de vista teórico estas dos visiones disten mucho y ambas sean igualmente interesantes para desarrollar conceptos, en la práctica se tiende a optar por el enfoque que se ha seguido hasta ahora, es decir, el epistemológico, tomando la confianza como un nuevo parámetro que asiste a la hora de escoger una acción u otra en el modelo BDI. De cara a la implementación, además, resulta mucho más sencillo este enfoque, pudiendo construir aplicaciones sobre otros modelos ya considerados. Planteemos, por ejemplo, el dilema del prisionero con la siguiente matriz de pagos:
+
+       |   C  |    D
+-------|------|----------
+   C   | -1, -1  |   -5, 0
+   D   | 0, -5  |   -3, -3
+[Tabla [X]: Matriz de pagos asociada al dilema del prisionero.]
+
+Por ahora si iniciásemos una simulación iterada entre dos agentes, nada distaría de los comportamientos estudiados hasta el momento, especialmente en el Capítulo 7. Sin embargo, ¿qué ocurriría si incluyésemos una pequeña modificación? La adaptación que vamos a considerar, cercana al Capítulo 8.8, considera un paso previo en el que ambos jugadores indican su 'intención' de jugada. Usamos las comillas debido a que dicha intención no tiene por qué coincidir necesariamente con la jugada que realmente desean llevar a cabo. Antes de ver en la siguiente tabla un ejemplo de juego iterado añadiendo este paso adicional definamos la notación que emplearemos.
+
+!!! Tip Definición de $I, J, R$
+    Denotamos por $I(x_i, x_j, ...)$ a la intención de juego del agente $x_i$ al interactuar con el agente $x_j$, pudiendo depender esta función de otros parámetros tales como la confianza, la reputación o negociaciones previas. Denotaremos por $J(x_i, x_j, I(x_i, x_j,...), I(x_j,x_i,...)...)$, análogamente, a la jugada de $x_i$ en las mismas condiciones que antes, añadiendo en este caso la **intención** de ambos jugadores. Dado el dilema del prisionero anterior, denotaremos por $R(J)$ al vector de recompensas para cada agente, con $J$ definida como antes.    
+	
+<br>	
+   Agente    |   $I_1$  | $J_1$ | $R_1$ | $I_2$ | $J_2$ | $R_2$ | ...
+-------|------|----------|----|----|----|----|----
+   $x_1$ | C | C | -5 | C | D | -8 | ...
+   $x_2$ | C | D | 0 | C | D | -3 | ...
+[Tabla [X]: Dilema del prisionero iterado con intenciones.]
+
+En la tabla anterior nos encontraríamos con que ambos agentes, en un primer momento, afirman que van a cooperar, y sin embargo $x_2$ finalmente decide delatar. A la vista de este comportamiento, $x_1$ recurre al 'ojo por ojo', y declara su intención de cooperar para luego delatar. Si bien este pequeño juego no tiene mucho interés por sí mismo, sirve de buen ejemplo para ver de qué forma se pueden añadir las valoraciones de la confianza, pudiendo profundizarse en el tema, por ejemplo, con los trabajos de Jøsang e Ismail en [#4], o Burnett *et al.* en [#3]. Nótese que, aunque el caso del primero considere la reputación, podemos adaptarla de forma inmediata a nuestro modelado. 
+
+Usando una simplificación de la función de probabilidad subjetiva de Brunett *et al.*, definimos la siguiente función de probabilidad, para cada posible jugada $J(x_j, x_i, ...)$ e intención $I(x_j, x_i,...)$, con $C$ la confianza que tiene el agente $x_i$ en las intenciones de $x_j$: $P(J | I, C)$. Esta función, que virtualmente podría regirse según cualquier distribución, podemos considerar en este caso que el agente $x_i$ intenta estimarla según la siguiente regla:
+* Si $C > 0.5 \implies P(J = C | I = C) = P(J = D | I = D) = 1$
+* Si $C < 0.5 \implies P(J = D | I = C) = P(J = C | I = D) = 1$ 
+Este comportamiento, aunque tremendamente simplificado en teoría y en notación, representa una de las formas más sencillas de codificar la confianza, y es que dependiendo del juego y de las posibles intenciones del otro bajo la suposición de agente inteligente, así como teniendo en cuenta la confianza depositada sobre dicho agente, deberíamos esperar un resultado u otro de cara a la toma de decisiones, incluyendo todos estos elementos como partes del aprendizaje de los agentes. Evidentemente, podemos hacer suposiciones sobre el aspecto de la distribución asociada a la probabilidad $P$, como por ejemplo hacen Jøsang e Ismail en [#4], donde salvando las distancias consideran una distribución beta, asociada a una valoración de la reputación y de la confianza.
+
+### 4.2. Ejemplos de Aplicación de la Reputación
+
+Incluimos en esta sección algunas muestras sobre cómo la reputación se puede incluir en un sistema multiagente para mejorar la comprensión de los agentes sobre su entorno, ayudándolos a tomar mejores decisiones.
+
+#### Reputación personalizada directa
+> "Una reputación de mil años puede depender de la conducta de una hora"
+>
+>      -- Proverbio japonés
+
+En este primer caso, el más rápido de modelar, damos por hecho que cierto número de agentes interactúan, como es habitual, los unos con los otros, siendo la interacción que supondremos, desde este momento, el dilema del prisionero, con la codificación del anterior punto.
+
+Ya vimos en el Capítulo 7, sobre aprendizaje, que una aproximación que contemplase la posibilidad de mejorar el rendimiento de un agente contra otro con el que ya hubiese jugado podía ser, por ejemplo, la de contar con una decisión *a priori*, actuando en respuesta al último encuentro desde dicho momento en futuras iteraciones. Esta idea, que vimos tanto contemplando el último encuentro como el histórico de todos los jugados, supone no solo el primer ejemplo de aprendizaje, sino también de reputación personalizada, pues cada agente asigna una reputación basada en el comportamiento pasado a cada otro agente. 
+
+En este caso entendemos que el agente $x_i$, en el que se centra nuestra atención, ha obtenido de primera mano información sobre otro agente $x_j$, esto es, ha realizado al menos una iteración del juego con él. A partir de este primer encuentro, nuestro agente $x_i$ conoce, al menos, cuál fue el resultado de dicho encuentro, y basándose en dicho comportamiento puede aprender, siendo el modelado más rápido aquel en el que $x_i$ guarda un valor de reputación para cada agente contra el que haya jugado, ya sea dicha reputación una media de resultados, una lista de acciones del oponente o cualquier otra forma de codificar dicha información. Concretamente, y basándonos en [#1], partimos de la siguiente codificación de las estrategias, sin haber introducido aún el comportamiento basado en la reputación, como estructura general que buscaremos mejorar:
+
+Estrategias | I |T |R |P |S
+-------|------|---|--|---|--
+Cooperar (C) | 1| 1 |1 |1 |1
+Delatar (D)| 0| 0| 0| 0| 0
+Ojo por ojo (TFT)| 1| 1| 1| 0| 0
+[Tabla [X]: Codifación de estrategias basadas para diferentes escenarios. <br>I: inicial, T: traición, R: recompensa, P: penalización, S: sufrimiento<br>(temptation, reward, punishment, sucker)]
+
+Incluimos ahora una nueva estrategia, basada en la reputación, determinando el comportamiento inicial como función de la reputación del agente $x_j$:
+
+Estrategias | I |T |R |P |S
+-------|------|---|--|---|--
+Ojo por ojo con reputación (RTFT)| *| 1| 1| 0| 0
+[Tabla [X]: Codifación de la estrategia RTFT]
+
+Nótese que la influencia que tiene la reputación, al menos en este modelo, se limita a modificar el comportamiento inicial del agente, sirviendo como herramienta de aprendizaje previa a los encuentros.
+
+En el modelado que lleva a cabo Mui, se consideran los siguientes casos:
+
+* Reputación derivada de los encuentros individuales.
+* Reputación observada individual.
+* Reputación derivada del grupo.
+* Reputación propagada.
+
+En cada uno de ellos, la principal diferencia es la fuente de información a la que recurren los agentes para obtener la estimación de la reputación del otro agente, correspondiéndose cada una de estas con una de las fuentes que hemos considerado en la sección anterior. De forma semejante a como hicimos en el punto anterior, Mui contempla una determinación de $I$ semejante a nuestra estimación previa de $P$ en la última sección, a saber:
+
+!!! Tip Comportamiento inicial en RTFT  
+    Dado un valor umbral $r_0$, suponiendo que un agente $x_i$ con estrategia RTFT entra en una iteración del dilema del prisionero con otro agente $x_j$, y denotando por $r(x_j, x_i)$ a la reputación que tiene $x_j$ desde la vista de $x_i$, definimos la jugada inicial de $x_i$ como: $$\begin{cases}C & \text{si } r > r_0 \\ D & \text{si } r < r_0 \\ \text{comportamiento aleatorio} & \text{cc.}\end{cases}$$
+	
+Cabe destacar que con este planteamiento, al menos para algunos casos de las fuentes de reputación indicadas previamente, el número de pasos necesarios para que los RTFT se vuelvan la fuerza dominante en un contexto evolutivo es mucho menor que el obtenido considerando simplemente el comportamiento TFT, hecho que estudia Mui empíricamente en [#1].
+
+Un punto a tener en cuenta, y que contemplaremos en la siguiente sección, es el estudio de la forma en la que estas diferentes reputaciones derivadas de varias fuentes de información se mezclan para obtener un único valor numérico con el que trabajar, pues sería necesario ponderar cada una de ellas.
+
+## 5. Compatibilidad
+Indicamos en este punto algunas otras tecnologías con las que tanto la reputación como la confianza pueden resultar compatibles, arrojando luz de cara a la obtención de mejores resultados en el marco del modelado.
+
+### 5.1. Entre la Confianza y la Reputación
+
+Ya hemos visto a lo largo del capítulo que ambas herramientas tienen mucho en común, y de hecho, en multitud de ocasiones, se pueden usar indistintamente. Sin embargo, siguiendo el planteamiento de la sección 4.1, si tomamos la confianza como un paso previo a la toma de una decisión, podríamos aplicarla de cara a la valoración de diferentes reputaciones recibidas. En la línea del último punto, si nos encontrásemos con diferentes fuentes de información indicándonos la reputación de un agente $x_i$, enviándonas todas estos mensajes de forma simultánea, resultaría interesante considerar el siguiente planteamiento, compatibilizando las características de cada herramienta:
+$$r'(x_j, x_i) = \sum_{x_k \in info_i} C(x_k, x_i) \times r(x_j, x_k)$$
+Es decir, la reputación efectiva asociada a $x_j$ desde la perspectiva de $x_i$, $r'(x_j, x_i)$, es la suma de las reputaciones que los informantes de $x_i$, $info_i$, poseen sobre $x_j$ y le proporcionan a $x_i$, esto es, $r(x_j, x_k)$, ponderada según la confianza que tiene el agente $x_i$ en cada uno de estos agentes, $C(x_k, x_i)$. Con esto logramos afrontar no solo la cuestión de recurrir a ambas herramientas simultáneamente, sino que además proporcionamos una forma sencilla de procesar diferentes fuentes de información, basándonos en la confianza depositada en cada uno de los informantes, sin más que sustituir $r(x_j, x_k)$ por la información correspondiente proporcionada a $x_j$ por $x_k$, siempre y cuando esta información admita una representación numérica como la reputación.
+
+### 5.2. Negociación y Subastas
+Siguiendo el ejemplo visto en la sección 4.2, uno podría —y debería— plantearse qué podría ocurrir si los agentes involucrados en el dilema del prisionero iterado con intenciones tuviesen la posibilidad de negociar, por ejemplo, prometiendo acciones futuras a cambio de acciones presentes o incluso intercambiando los 'puntos' recibidos como recompensa. Esta situación, desglosada en el Capítulo 5, representa un caso típico de negociación, en el que los agentes pueden intercambiar determinados 'bienes', buscando maximizar su beneficio. Ya vimos que el dilema del prisionero presenta, para los dos jugadores, la estrategia D como dominante frente a la estrategia C. Es claro que, sin cooperación ninguno de los dos querrá cambiar, **unilateralmente**, su decisión.
+
+Sin embargo, considerando el caso en el que contamos con una comunicación fiable, los dos agentes podrían negociar escoger C simultáneamente, maximizando el beneficio total. A pesar de esto, dependiendo del sistema podría darse que nada impide a un agente mentir en la negociación, ejecutando luego una estrategia diferente a la prometida, tal y como ocurría con el ejemplo antes expuesto. En estas situaciones resulta útil considerar la reputación (o la confianza) del otro agente en este ámbito, usándose de forma semejante a como ya se ha indicado en otros puntos.
+
+### 5.3. Reglas
+
+>    "Son más unas directrices que verdaderas normas"
+>
+>    --  Capitán Hector Barbossa, Piratas del Caribe: La maldición de la Perla Negra
+
+Habitualmente se consideran en los sistemas multiagente reglas inflexibles que atan a los diferentes agentes, tales como la posiblidad de mentir o no en una negociación, el poder compartir información con otros agentes o incluso el tener acceso a información *a priori* privada. Cabe preguntarse ahora, ¿y qué ocurriría si estas reglas fuesen *directrices*, opciones que es recomendable seguir pero que nada nos impide ignorar?
+
+Recurriendo a la definición de reglas de Tuomela [#8] diríamos que dichas reglas inflexibles serían las r-reglas, agrupándose en otros grupos las reglas asociadas a la pertenencia a un grupo o al interés personal. Habitualmente, cabe esperar que el castigo, suponiendo que existiese, asignado por incumplir una regla de este segundo grupo debería ser menor que el determinado para el incumplimiento de una norma del segundo. Basándonos en esto, y de cara a posibles implementaciones, si asignamos pesos (habitualmente negativos) al incumplimiento detectado de una norma, nace automáticamente la opción de considerar la confianza que tenemos en que un agente respete una regla concreta, o bien la reputación en general del mismo cumpliendo las diferentes reglas del sistema. Nótese que hemos hablado de 'incumplimiento detectado', entendiendo que existe algún agente adicional con capacidad para detectar estos incumplimientos.
+
+En este caso, por lo tanto, podemos concluir que el recurrir a las herramientas indicadas puede no solo proporcionarnos información sobre el comportamiento del otro agente con respecto a nosotros, sino que además puede darnos pistas sobre el metacomportamiento del mismo de cara al funcionamiento general del sistema, bajo los supuestos previos. 
+
+	
+## 6. Los Límites de la Confianza y de la Reputación
+
+Incluimos aquí algunos problemas que es recomendable considerar al realizar la implementación de las herramientas indicadas, así como de cara a la modelización de contextos reales.
+
+### 6.1. ¿La información proporcionada es fidedigna?
+Ya hemos comentado en secciones previas la importancia de usar la confianza como paso previo para evaluar información proporcionada, incluyéndose en este grupo en particular la reputación. Justamente en esta línea nos encontramos con el problema del filtrado de la información, y es que habitualmente nada impide a un agente enviar información falsa, especialmente si goza de buena reputación, en cuyo caso cabe esperar que el mensaje enviado sea tomado como válido. Un enfoque para este problema, que es el que da Weiss en [#2], consiste en asignar pesos a los diferentes agentes, tales como la confianza, de forma tal que estos se vean disminuidos según el comportamiento del agente a lo largo del tiempo. Desgraciadamente, con este enfoque no se puede tratar el problema expuesto previamente, dado que tendríamos para dicho agente un peso elevado hasta el momento en el que miente por primera vez.
+
+### 6.2. Renovación de ID y Zánganos
+Sistemas como los aquí planteados, con cuestiones de negociación y comunicación incluidas, son sensibles al efecto de la renovación del ID, que no es más que un cambio de nombre, como podría ser en una plataforma de ventas, en la que un vendedor, tras recibir varias valoraciones negativas, decide crear una nueva cuenta y cambiarse el nombre, reseteando en la práctica la confianza y la reputación que le asignan los otros usuarios. Aunque otra información pueda proporcionarnos ayuda a la hora de detectar estos cambios, tales como el disponer de un compendio con los productos ofrecidos por diferentes agentes, con el objetivo de identificar cuentas equivalentes, normalmente tener en cuenta acciones como esta suele resultar muy costoso, debido a la cantidad de información que estaríamos almacenando.
+
+Por otro lado, y en relación con el uso de diferentes identificadores, nos encontramos con el empleo de 'zánganos', o 'robots', agentes que realmente son extensiones —si no clones— de otro, de forma tal que ayudan a este a generar una reputación buena, a pesar de no haber hecho virtualmente 'nada'. La detección de zánganos es una tarea complicada, y más cuanto más complejo el comportamiento del mismo, siendo difícil identificarlos en contextos con cientos de miles de agentes. Un ejemplo de esta situación sería el uso de bots en Instagram o Amazon valorando positivamente el contenido de determinadas cuentas.
+
+### 6.3. Explotación del tiempo de espera
+Un problema que en la realidad puede darse y resultar en un grave peligro para los usuarios es el del *lag*, o tiempo de espera adicional asociado a una acción, y es que por motivos logísticos lo habitual es que la información de cualquier tipo (confianza, reputación, ofertas de negociación...) no llegue instantáneamente, ya sea por medios directos o indirectos. En este habitualmente pequeño lapso de tiempo, un agente con mejores medios podría aprovechar que la información sobre sus últimas acciones no se ha compartido, cuestión que podría resultarle de utilidad si estas conllevasen una reducción de su reputación y/o confianza. 
+
+Una forma de contrarrestar este problema es incrementando el tiempo de espera para todos los agentes, suponiendo que se tiene constancia de que uno o más de ellos disponen de un acceso privilegiado a la plataforma. Si recurrimos a esta estrategia, nos bastaría por tanto con esperar a que todas las acciones se resolviesen antes de empezar de nuevo, trabajando por lo tanto en este caso con un sistema síncrono, con todo lo que esto llevaría.
+
+## 7. Conclusiones
+A lo largo de este capítulo hemos podido ver de qué forma tanto la reputación como la confianza se pueden usar en diferentes contextos como paso previo, en el apartado epistemológico del modelo BDI, sirviendo como herramientas que ayudan a los agentes a tener un **mejor conocimiento de su entorno** y, con ello, permitiéndoles tomar **mejores decisiones**. Aunque los dos conceptos estudiados se asemejen, es cierto que conviene distinguirlos de cara a poder proporcionar una u otra interpretación del modelo, especialmente en los casos en los que trabajamos con alguna otra tecnología, como las descritas en la sección 5.
+
+Con la división de las **fuentes de información** de la sección 3 hemos podido diseñar una base para organizar no solo posibles codificaciones de estas dos herramientas, sino de cualquier otra que dependa de un intercambio de información entre uno o más agentes. Como ya hemos dicho, estos datos pueden ser desde decisiones en determinadas acciones en la teoría de juegos, así como promesas de acciones futuras, en un sistema con negociación o subastas, siendo por lo tanto aplicables a multitud de sistemas, especialmente de cara a la clasificación de la obtención de información por parte de los diferentes agentes que componen el sistema. Más concretamente, en la sección 4 hemos intentado ofrecer algunos ejemplos de uso concreto de las herramientas foco de nuestro interés, comentando su lugar dentro de la jerarquía expuesta en la sección 3.
+
+Por otro lado, debido a las diferentes fuentes que proporcionan nuevas perspectivas sobre la confianza y la reputación, en disciplinas como la sociología, la inteligencia artificial o la psicología, resulta vital el diseñar una definición formal para facilitar la comunicación entre estas áreas, dando lugar a una plantilla de trabajo común. Si bien hemos planteado algunas opciones a lo largo del trabajo, una formalización completa supondría un trabajo considerable, debido a la multitud de casuísticas que habría que contemplar, especialmente teniendo en cuenta las diferencias entre los múltiples enfoques particulares según el ámbito. Sin embargo, la utilidad de un entorno formal común es clara, y es justamente por eso que una de las principales ramificaciones del área estudiada es la de creación de **ontologías sobre la reputación y la confianza**, como las realizadas por Sherchan *et al.* [#11] o Huang y Fox [#12], facilitando el acceso común al tema.
+
+Otro de los campos de aplicación más claros es el de recurrir al concepto de confianza en los **intercambios de credenciales**, empleando en dicho caso la confianza que un determinado proveedor de servicios deposita en otro agente, dependiendo de esta forma la seguridad del agente cuyos credenciales deben intercambiarse. En este contexto, los ejemplos considerados a lo largo del capítulo muestran aplicaciones evidentes, proporcionándonos ideas sobre nuevas herramientas para evitar situaciones no deseadas y peligrosas en un entorno digital, con un intercambio de información prácticamente constante.
+
+Algunos posibles planteamientos futuros, tales como la compatibilidad de las tecnologías consideradas con otras en situaciones no tan estables como las asumidas a lo largo del capítulo, especialmente en relación con la **comunicación**, han sido mencionadas en el apartado de ejercicios, con el objetivo de ofrecer guías sobre posibles formas de profundizar en el tema, intentando ofrecer algo de luz sobre cuestiones meramente mencionadas a lo largo del capítulo.
+
+
+## 8. Ejercicios
+
+!!! Note Ejercicio 1 - Implementación de la estrategia RTFT de Mui [#1]
+    Implementa la estrategia RTFT en un problema del prisionero iterado, para los siguientes casos:<ul><li>Reputación derivada de los encuentros individuales.</li><li>Reputación observada individual.</li><li>Reputación derivada del grupo.</li><li>Reputación propagada.</li></ul>
+	
+!!! Note Ejercicio 2 - Dilema del prisionero con directrices
+    Considerando el dilema del prisionero iterado con intenciones, tal y como indicamos antes, determina cuál es la estrategia dominante a largo plazo, en un contexto de estrategias evolutivas.
+	
+!!! Note Ejercicio 3 - Comunicación limitada
+    Hemos comentado desde un primer momento que la comunicación supone un factor fundamental para tratar tanto con la reputación como con la confianza. Implementa un sistema multiagente en el que la comunicación admita errores, pudiendo ser estos, por ejemplo, para cierta probabilidad $p_0$:<ul><li>El mensaje se convierte en otro aleatorio con probabilidad $p_0$.</li><li>Los mensajes se envían, pero la acción que vendría determinada por ellos no se lleva a cabo o difiere de la esperada, con probabilidad $p_0$.</li><li>Los mensajes enviados por dos agentes se intercambian con probabilidad $p_0$.</li><li>Cada cierto número de pasos la comunicación entre uno o más agentes cae, impidiendo el intercambio de información durante otro número de pasos.</li></ul>
+
+!!! Note Ejercicio 4 - Subastas
+    Asumiendo que los agentes tienen recursos limitados y que uno de ellos es el subastador, implementa una subasta iterada (ver Capítulo 8.6) en la que los agentes que prometen un pago deben realizarlo. Utiliza el valor de sus pagos en relación con el tipo de subasta escogido para determinar una función confianza que ayude a la hora de intentar inferir las ofertas de los otros agentes. ¿Qué ocurre ahora si los agentes pueden decidir cancelar un pago, a cambio de no participar en la siguiente subasta? Entendemos que es el siguiente agente con la mejor oferta el que obtendría el producto subastado.
+
+## 9. Bibliografía	
+
+[#1]: Mui, Lik & Mohtashemi, Mojdeh & Halberstadt, Ari. (2002). Notions of reputation in multi-agents systems: A review. Proceedings of the International Conference on Autonomous Agents. 280-287. 10.1145/544741.544807. 
+
+[#2]: Weiss, G., 2006. Multiagent systems. Cambridge, Mass.: MIT Press.
+
+[#3]: Burnett, C., Norman, T., & Sycara, K. (2011). In International Joint Conference on Artificial Intelligence.
+
+[#4]: Jøsang, A. & Ismail, R. (2002). The Beta Reputation System, 15th Bled Electronic Commerce Conference.
+
+[#5]: Gambetta, D. Can We Trust Trust?, págs. 213–237. Basil Blackwell, 1988.
+
+[#6]: Marsh, S. Formalising Trust as a Computational Concept. PhD thesis, Department of Mathematics and Computer Science, University of Stirling, 1994.
+
+[#7]: Baghramian, M., Petherbridge D. & Stout, R. (2020). Vulnerability and Trust: An Introduction, International Journal of Philosophical Studies, 28:5, 575-582, DOI: 10.1080/09672559.2020.1855814
+
+[#8]: Tuomela, R. The Importance of Us: A Philosophical Study of Basic Social Norms. Stanford University Press, 1995.
+
+[#9]: Nowak, M. & Sigmund, K.  (2000). “Cooperation versus Competition,” Financial Analyst Journal, July/August, págs. 13-22.
+
+[#10]: Zacharia, G. & Maes P. (1999). “Collaborative Reputation Mechanisms in Electronic Marketplaces.” Proc. 32nd Hawaii International Conf on System Sciences.
+
+[#11]: Sherchan, W., Nepal, S., Hunklinger, J. & Bouguettaya, A. “A Trust Ontology for Semantic Services“, 2010 IEEE International Conference on Services Computing, 2010, pp. 313-320, doi: 10.1109/SCC.2010.42.
+
+[#12]: Huang, J. & Fox, M. “An ontology of trust: formal semantics and transitivity“, August 2006 ICEC '06: Proceedings of the 8th international conference on Electronic commerce: The new e-commerce: innovations for conquering current barriers, obstacles and limitations to conducting successful business on the internet pp. 259–270, doi:10.1145/1151454.1151499
+
+ <div class="tocAuxContents">
+   <!-- <h1><a href="#">...</a></h1> -->
+   <!-- <h1><a href="#"> Y | Título Capítulo Y</a></h1> -->
+   <!-- <h1><a href="#"> Z | Título Capítulo Z</a></h1> -->
+</div>
+
+
+<style class="fallback">body{visibility:hidden;}</style>
+<script>markdeepOptions={tocStyle:'longSH'};</script>
+<!-- Markdeep: --><script src="sources/markdeep.min.js" charset="utf-8"></script>
+
+
